@@ -1,0 +1,103 @@
+﻿@model ModelL.Historial
+
+@{
+    ViewBag.Title = "SuperDigito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model == null)
+{
+    <h2 class="alert alert-warning text-center">Aún no ha iniciado sesión, inicie sesión para poder acceder a este modulo!</h2>
+
+    <div class="justify-content-center">
+        <div class="d-flex flex-column align-items-center">
+            <a href="@Url.Action("Login", "Usuario")" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
+    </div>
+}
+else
+{
+
+
+
+    <h3 class="text-center">Bienvenido @Model.Usuario.UserName</h3>
+    <hr />
+    <h2 class="text-center">SuperDigito</h2>
+
+    if (ViewBag.Mensaje != null)
+    {
+        <div class="alert alert-info">
+            @ViewBag.Mensaje
+        </div>
+    }
+
+    using (Html.BeginForm("SuperDigito", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(model => model.Usuario.IdUsuario)
+        @Html.HiddenFor(model => model.Usuario.UserName)
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-auto d-flex align-items-center">
+                @Html.LabelFor(model => model.Numero)
+                @Html.TextBoxFor(model => model.Numero, new { @class = "form-control", @type = "num" })
+            </div>
+            <div class="col-auto d-flex align-items-center">
+                @Html.LabelFor(model => model.Resultado)
+                <input type="num" name="resultado" value=@Model.Resultado readonly class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mt-3 justify-content-center">
+            <div class="col-1 d-flex align-items-center">
+                <input type="submit" class="btn btn-success" value="Calcular" />
+            </div>
+        </div>
+    }
+
+    <hr />
+
+    <h2 class="text-center">Historial</h2>
+
+    <hr />
+
+    <div>
+        @if (Model.Historiales != null && Model.Historiales.Count > 0)
+        {
+            <div class="row justify-content-center">
+                <div class="col d-flex flex-column align-items-end">
+                    <a href="@Url.Action("Delete", "Usuario", new { IdUsuario = Model.Usuario.IdUsuario })" onclick="return confirm('Estas seguro de eliminar todos los registros?')" class="btn btn-danger">Eliminar Historial</a>
+                </div>
+            </div>
+
+            <br />
+            <table class="table table-dark table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>Numero</th>
+                        <th>Resultado</th>
+                        <th>Fecha</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (ModelL.Historial historial in Model.Historiales)
+                    {
+                        <tr>
+                            <td>@historial.Numero</td>
+                            <td>@historial.Resultado</td>
+                            <td>@historial.Fecha</td>
+                            <td><a href="@Url.Action("DeleteHistorial", "Usuario", new { IdHistorial = historial.IdHistorial})" onclick="return confirm('Estas seguro de eliminar el registro?')" class="btn btn-outline-danger"><i class="bi bi-trash"></i></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <p>Sin numeros registrados</p>
+            </div>
+        }
+    </div>
+}

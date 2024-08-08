@@ -1,0 +1,41 @@
+﻿@model ModelL.Usuario
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center">Login</h2>
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-info">
+        @ViewBag.Mensaje
+    </div>
+}
+
+<hr />
+
+@using (Html.BeginForm("Login", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="row justify-content-center">
+        <div class="col d-flex flex-column align-items-center">
+            <div>
+                @Html.LabelFor(model => model.UserName, "Nombre de Usuario")
+                @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.Password, "Contraseña")
+                @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @type = "password" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3 justify-content-center">
+        <div class="col-1 d-flex flex-column align-items-center">
+            <input type="submit" class="btn btn-success" value="Ingresar" />
+        </div>
+        <div class="col-1 d-flex flex-column align-items-center">
+            <a href="@Url.Action("Registro", "Usuario")" class="btn btn-primary">Registrarse</a>
+        </div>
+    </div>
+}
