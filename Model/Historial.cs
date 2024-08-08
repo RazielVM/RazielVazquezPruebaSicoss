@@ -9,7 +9,6 @@ namespace ModelL
     public class Historial
     {
         public int IdHistorial { get; set; }
-        public Usuario Usuario { get; set; }
         public int Numero { get; set; }
         public int Resultado { get; set; }
         public DateTime Fecha { get; set; }

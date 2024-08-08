@@ -61,6 +61,9 @@
           <Parameter Name="Nombre" Type="varchar" Mode="In" />
           <Parameter Name="Apellido" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="UsuarioUserName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="UserName" Type="varchar" Mode="In" />
+        </Function>
         <EntityContainer Name="RazielVazquezPruebaSicossModelStoreContainer">
           <EntitySet Name="Historial" EntityType="Self.Historial" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
@@ -102,7 +105,10 @@
           <Parameter Name="IdHistorial" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="HistorialGetByUsuario" ReturnType="Collection(RazielVazquezPruebaSicossModel.HistorialGetByUsuario_Result)">
-            <Parameter Name="IdUsuario" Mode="In" Type="Int32" />
+          <Parameter Name="IdUsuario" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="UsuarioUserName" ReturnType="Collection(String)">
+            <Parameter Name="UserName" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <EntityType Name="Historial">
@@ -199,6 +205,7 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="UsuarioUserName" FunctionName="RazielVazquezPruebaSicossModel.Store.UsuarioUserName" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

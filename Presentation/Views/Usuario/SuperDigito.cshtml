@@ -1,4 +1,4 @@
-﻿@model ModelL.Historial
+﻿@model ModelL.Usuario
 
 @{
     ViewBag.Title = "SuperDigito";
@@ -20,7 +20,7 @@ else
 
 
 
-    <h3 class="text-center">Bienvenido @Model.Usuario.UserName</h3>
+    <h3 class="text-center">Bienvenido @Model.UserName</h3>
     <hr />
     <h2 class="text-center">SuperDigito</h2>
 
@@ -33,18 +33,21 @@ else
 
     using (Html.BeginForm("SuperDigito", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        @Html.HiddenFor(model => model.Usuario.IdUsuario)
-        @Html.HiddenFor(model => model.Usuario.UserName)
+        @Html.HiddenFor(model => model.IdUsuario)
+        @Html.HiddenFor(model => model.UserName)
 
         <div class="row justify-content-center mt-5">
             <div class="col-auto d-flex align-items-center">
-                @Html.LabelFor(model => model.Numero)
-                @Html.TextBoxFor(model => model.Numero, new { @class = "form-control", @type = "num" })
+                @Html.LabelFor(model => model.Historial.Numero)
+                @Html.TextBoxFor(model => model.Historial.Numero, new { @class = "form-control m-3", @type = "text", @id = "numberField" })
             </div>
+
             <div class="col-auto d-flex align-items-center">
-                @Html.LabelFor(model => model.Resultado)
-                <input type="num" name="resultado" value=@Model.Resultado readonly class="form-control" />
+                @Html.LabelFor(model => model.Historial.Resultado)
+                <input type="num" name="resultado" value=@Model.Historial.Resultado readonly class="form-control m-3" />
             </div>
+
+            <span class="text-center" id="error-message" style="color:red; display:none;">Solo se permiten números.</span>
         </div>
 
         <div class="row mt-3 justify-content-center">
@@ -61,11 +64,11 @@ else
     <hr />
 
     <div>
-        @if (Model.Historiales != null && Model.Historiales.Count > 0)
+        @if (Model.Historial.Historiales != null && Model.Historial.Historiales.Count > 0)
         {
             <div class="row justify-content-center">
                 <div class="col d-flex flex-column align-items-end">
-                    <a href="@Url.Action("Delete", "Usuario", new { IdUsuario = Model.Usuario.IdUsuario })" onclick="return confirm('Estas seguro de eliminar todos los registros?')" class="btn btn-danger">Eliminar Historial</a>
+                    <a href="@Url.Action("Delete", "Usuario", new { IdUsuario = Model.IdUsuario })" onclick="return confirm('Estas seguro de eliminar todos los registros?')" class="btn btn-danger">Eliminar Historial</a>
                 </div>
             </div>
 
@@ -80,7 +83,7 @@ else
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (ModelL.Historial historial in Model.Historiales)
+                    @foreach (ModelL.Historial historial in Model.Historial.Historiales)
                     {
                         <tr>
                             <td>@historial.Numero</td>
@@ -101,3 +104,24 @@ else
         }
     </div>
 }
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputField = document.getElementById('numberField');
+        const errorMessage = document.getElementById('error-message');
+
+        inputField.addEventListener('input', function () {
+            const regex = /^[0-9]*$/;
+            const value = inputField.value;
+
+            if (!regex.test(value)) {
+                inputField.value = value.replace(/[^0-9]/g, ''); // Elimina caracteres no numéricos
+                inputField.style.borderColor = 'red'; // Cambia el borde a rojo
+                errorMessage.style.display = 'inline'; // Muestra el mensaje de error
+            } else {
+                inputField.style.borderColor = ''; // Restaura el borde al estado original
+                errorMessage.style.display = 'none'; // Oculta el mensaje de error
+            }
+        });
+    });
+</script>

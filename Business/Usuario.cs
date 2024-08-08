@@ -47,12 +47,11 @@ namespace Business
 
         public static Dictionary<string, object> Login(string userName, string password)
         {
-            ModelL.Historial historial = new ModelL.Historial();
             Dictionary<string, object> diccionario = new Dictionary<string, object>
             {
                 { "Resultado", false },
                 { "Excepcion", "" },
-                { "Usuario", historial }
+                { "Usuario", new ModelL.Usuario() }
             };
 
             try
@@ -65,15 +64,11 @@ namespace Business
                     {
                         ModelL.Usuario usuario = new ModelL.Usuario();
 
-                        historial.Usuario = new ModelL.Usuario();
-                        historial.Usuario.IdUsuario = user.IdUsuario;
-                        historial.Usuario.UserName = user.UserName;
-
-                        //usuario.IdUsuario = user.IdUsuario;
-                        //usuario.UserName = user.UserName;
+                        usuario.IdUsuario = user.IdUsuario;
+                        usuario.UserName = user.UserName;
 
                         diccionario["Resultado"] = true;
-                        diccionario["Usuario"] = historial;
+                        diccionario["Usuario"] = usuario;
                     }
                 }
             }
@@ -85,6 +80,37 @@ namespace Business
             return diccionario;
 
         }
+
+        public static Dictionary<string, object> GetUserName(string userName)
+        {
+            Dictionary<string, object> diccionario = new Dictionary<string, object>
+            {
+                { "Resultado", false },
+                { "Excepcion", "" }
+            };
+
+            try
+            {
+                using (Data.RazielVazquezPruebaSicossEntities context = new Data.RazielVazquezPruebaSicossEntities())
+                {
+                    var user = context.UsuarioUserName(userName).FirstOrDefault();
+
+                    if (user != null)
+                    {
+                        diccionario["Resultado"] = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                diccionario["Resultado"] = false;
+                diccionario["Excepcion"] = ex.Message;
+            }
+            return diccionario;
+
+        }
+
+
 
         public static int SuperDigito(ModelL.Historial historial)
         {

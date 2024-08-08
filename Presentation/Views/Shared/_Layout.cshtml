@@ -22,7 +22,7 @@
                     <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Login", "Login", "Usuario", new { area = "" }, new { @class = "nav-link" })</li>
-                    @if(Session["Historial"] != null) { 
+                    @if(Session["Usuario"] != null) { 
                     <li>@Html.ActionLink("Log out", "Logout", "Usuario", new { area = "" }, new { @class = "nav-link" })</li>
                     }
                 </ul>

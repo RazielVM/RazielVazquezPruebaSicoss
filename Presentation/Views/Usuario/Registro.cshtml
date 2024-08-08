@@ -31,8 +31,13 @@
             </div>
             <div>
                 @Html.LabelFor(model => model.Password)
-                @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @type = "password" })
+                @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @type = "password", @id = "passwordField" })
             </div>
+            <div>
+                <label>Confirmar Password</label>
+                <input class="form-control" type="password" id="confirmPasswordField" />
+            </div>
+            <span id="message" style="display:none; color:green;"></span>
         </div>
     </div>
 
@@ -42,3 +47,31 @@
         </div>
     </div>
 }
+
+
+<script>document.addEventListener('DOMContentLoaded', function () {
+        const passwordField = document.getElementById('passwordField');
+        const confirmPasswordField = document.getElementById('confirmPasswordField');
+        const message = document.getElementById('message');
+
+        function validatePasswords() {
+            if (passwordField.value === confirmPasswordField.value && passwordField.value !== '') {
+                // Contraseñas coinciden
+                passwordField.style.borderColor = 'green';
+                confirmPasswordField.style.borderColor = 'green';
+                message.textContent = 'Las contraseñas coinciden';
+                message.style.color = 'green';
+                message.style.display = 'inline';
+            } else {
+                // Contraseñas no coinciden
+                passwordField.style.borderColor = 'red';
+                confirmPasswordField.style.borderColor = 'red';
+                message.textContent = 'Las contraseñas no coinciden';
+                message.style.color = 'red';
+                message.style.display = 'inline';
+            }
+        }
+
+        passwordField.addEventListener('input', validatePasswords);
+        confirmPasswordField.addEventListener('input', validatePasswords);
+    });</script>

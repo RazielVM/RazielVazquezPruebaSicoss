@@ -9,7 +9,7 @@ namespace Business
 {
     public class Historial
     {
-        public static Dictionary<string, object> Add(ModelL.Historial historial)
+        public static Dictionary<string, object> Add(ModelL.Historial historial, int idUsuario)
         {
             Dictionary<string, object> diccionario = new Dictionary<string, object> 
             {
@@ -21,7 +21,7 @@ namespace Business
             {
                 using(Data.RazielVazquezPruebaSicossEntities context = new Data.RazielVazquezPruebaSicossEntities())
                 {
-                    int historialRegistrado = context.HistorialAdd(historial.Numero, historial.Resultado, historial.Usuario.IdUsuario);
+                    int historialRegistrado = context.HistorialAdd(historial.Numero, historial.Resultado, idUsuario);
 
                     if (historialRegistrado > 0 )
                     {
@@ -110,13 +110,13 @@ namespace Business
             return diccionario;
         }
 
-        public static Dictionary<string, object> GetNumero(ModelL.Historial historial)
+        public static Dictionary<string, object> GetNumero(int numero, int idUsuario)
         {
             Dictionary<string, object> diccionario = new Dictionary<string, object>
             {
                 { "Resultado", false },
                 { "Excepcion", "" },
-                { "Historial", historial }
+                { "Historial", new ModelL.Historial() }
             };
 
             try
@@ -124,7 +124,7 @@ namespace Business
                 using (Data.RazielVazquezPruebaSicossEntities context = new Data.RazielVazquezPruebaSicossEntities())
                 {
                     var registro = context.Historials
-                        .Where(h => h.IdUsuario == historial.Usuario.IdUsuario && h.Numero == historial.Numero)
+                        .Where(h => h.IdUsuario == idUsuario && h.Numero == numero)
                         .FirstOrDefault();
 
                     if (registro != null)

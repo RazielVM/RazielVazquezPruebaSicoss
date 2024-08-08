@@ -17,20 +17,33 @@ namespace Presentation.Controllers
         [HttpPost]
         public ActionResult Registro(ModelL.Usuario usuario)
         {
-            Dictionary<string, object> result = Business.Usuario.Add(usuario);
+            Dictionary<string, object> comprobarRegistro = Business.Usuario.GetUserName(usuario.UserName);
 
-            bool resultado = (bool)result["Resultado"];
+            bool resultadoRegistro = (bool)comprobarRegistro["Resultado"];
 
-            if (resultado)
+            if (resultadoRegistro)
             {
-                ViewBag.Mensaje = "Registro Exitoso!";
+                ViewBag.Mensaje = "Ya hay un registro con ese nombre de usuario! favor de ingresar otro o de iniciar sesion!";
             }
             else
             {
-                string excepcion = (string)result["Excepcion"];
-                ViewBag.Mensaje = "Error! No se pudo completar el registro " + excepcion;
+                Dictionary<string, object> result = Business.Usuario.Add(usuario);
+
+                bool resultado = (bool)result["Resultado"];
+
+                if (resultado)
+                {
+                    ModelState.Clear();
+                    ViewBag.Mensaje = "Registro Exitoso!";
+                }
+                else
+                {
+                    string excepcion = (string)result["Excepcion"];
+                    ViewBag.Mensaje = "Error! No se pudo completar el registro " + excepcion;
+                }
             }
-            return View(usuario);
+            
+            return View();
         }
 
         [HttpGet]
@@ -47,8 +60,8 @@ namespace Presentation.Controllers
 
             if (resultado)
             {
-                ModelL.Historial historial = (ModelL.Historial)result["Usuario"];
-                Session["Historial"] = historial;
+                ModelL.Usuario usuario = (ModelL.Usuario)result["Usuario"];
+                Session["Usuario"] = usuario;
                 return Redirect("SuperDigito");
             }
             else
@@ -61,24 +74,26 @@ namespace Presentation.Controllers
         [HttpGet]
         public ActionResult Logout()
         {
-            Session["Historial"] = null;
+            Session["Usuario"] = null;
             return Redirect("Login");
         }
 
         [HttpGet]
         public ActionResult SuperDigito()
         {
-            ModelL.Historial historial = (ModelL.Historial)Session["Historial"];
+            ModelL.Usuario usuario = (ModelL.Usuario)Session["Usuario"];
 
-            if (historial != null)
+            if (usuario != null)
             {
-                Dictionary<string, object> resultHistorial = Business.Historial.GetByUsuario(historial.Usuario.IdUsuario);
+                Dictionary<string, object> resultHistorial = Business.Historial.GetByUsuario(usuario.IdUsuario);
 
                 bool resultadoHistorial = (bool)resultHistorial["Resultado"];
 
                 if (resultadoHistorial)
                 {
-                    historial.Historiales = ((ModelL.Historial)resultHistorial["Historial"]).Historiales;
+                    usuario.Historial = new ModelL.Historial();
+
+                    usuario.Historial.Historiales = ((ModelL.Historial)resultHistorial["Historial"]).Historiales;
                     //ViewBag.Mensaje = "El numero se registro en su historial!";
                 }
                 else
@@ -86,7 +101,7 @@ namespace Presentation.Controllers
                     ViewBag.Mensaje = "Error";
                 }
 
-                return View(historial);
+                return View(usuario);
             }
             else
             {
@@ -95,31 +110,31 @@ namespace Presentation.Controllers
         }
 
         [HttpPost]
-        public ActionResult SuperDigito(ModelL.Historial historial)
+        public ActionResult SuperDigito(ModelL.Usuario usuario)
         {
-            historial.Resultado = Business.Usuario.SuperDigito(historial);
+            usuario.Historial.Resultado = Business.Usuario.SuperDigito(usuario.Historial);
 
-            Dictionary<string, object> resultNumero = Business.Historial.GetNumero(historial);
+            Dictionary<string, object> resultNumero = Business.Historial.GetNumero(usuario.Historial.Numero, usuario.IdUsuario);
 
             bool resultadoNumero = (bool)resultNumero["Resultado"];
 
             if (resultadoNumero)
             {
-                Dictionary<string, object> resultHistorial = Business.Historial.GetByUsuario(historial.Usuario.IdUsuario);
-                historial.Historiales = ((ModelL.Historial)resultHistorial["Historial"]).Historiales;
+                Dictionary<string, object> resultHistorial = Business.Historial.GetByUsuario(usuario.IdUsuario);
+                usuario.Historial.Historiales = ((ModelL.Historial)resultHistorial["Historial"]).Historiales;
                 ViewBag.Mensaje = "El numero ya estaba registrado en su historial!";
             }
             else
             {
-                Dictionary<string, object> result = Business.Historial.Add(historial);
+                Dictionary<string, object> result = Business.Historial.Add(usuario.Historial, usuario.IdUsuario);
 
                 bool resultado = (bool)result["Resultado"];
                 //bool resultadoHistorial = (bool)resultHistorial["Resultado"];
 
                 if (resultado)
                 {
-                    Dictionary<string, object> resultHistorial = Business.Historial.GetByUsuario(historial.Usuario.IdUsuario);
-                    historial.Historiales = ((ModelL.Historial)resultHistorial["Historial"]).Historiales;
+                    Dictionary<string, object> resultHistorial = Business.Historial.GetByUsuario(usuario.IdUsuario);
+                    usuario.Historial.Historiales = ((ModelL.Historial)resultHistorial["Historial"]).Historiales;
                     ViewBag.Mensaje = "El numero se registro en su historial!";
                 }
                 else
@@ -128,7 +143,7 @@ namespace Presentation.Controllers
                 }
             }
 
-            return View(historial);
+            return View(usuario);
         }
 
         [HttpGet]

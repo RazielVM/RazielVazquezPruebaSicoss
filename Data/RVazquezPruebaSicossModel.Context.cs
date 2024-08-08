@@ -107,5 +107,14 @@ namespace Data
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<HistorialGetByUsuario_Result>("HistorialGetByUsuario", idUsuarioParameter);
         }
+    
+        public virtual ObjectResult<string> UsuarioUserName(string userName)
+        {
+            var userNameParameter = userName != null ?
+                new ObjectParameter("UserName", userName) :
+                new ObjectParameter("UserName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("UsuarioUserName", userNameParameter);
+        }
     }
 }
