@@ -13,5 +13,6 @@ namespace ModelL
         public int Resultado { get; set; }
         public DateTime Fecha { get; set; }
         public List<Historial> Historiales { get; set; }
+        public List<List<int>> DetalleSuperDigito { get; set; }
     }
 }

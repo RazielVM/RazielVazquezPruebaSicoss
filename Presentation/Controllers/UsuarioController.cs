@@ -112,7 +112,12 @@ namespace Presentation.Controllers
         [HttpPost]
         public ActionResult SuperDigito(ModelL.Usuario usuario)
         {
-            usuario.Historial.Resultado = Business.Usuario.SuperDigito(usuario.Historial);
+            List<List<int>> detalleSuperDigito = Business.Usuario.SuperDigito(usuario.Historial);
+            //Session["Detalle"] = detalleSuperDigito;
+            usuario.Historial.DetalleSuperDigito = detalleSuperDigito;
+
+            List<int> list = detalleSuperDigito[detalleSuperDigito.Count - 1];
+            usuario.Historial.Resultado = list[list.Count - 1];
 
             Dictionary<string, object> resultNumero = Business.Historial.GetNumero(usuario.Historial.Numero, usuario.IdUsuario);
 

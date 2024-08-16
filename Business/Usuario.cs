@@ -112,32 +112,49 @@ namespace Business
 
 
 
-        public static int SuperDigito(ModelL.Historial historial)
+        public static List<List<int>> SuperDigito(ModelL.Historial historial)
         {
             int entrada = historial.Numero;
 
-            int superDigito = CalcularSuperDigito(entrada);
+            //int superDigito = CalcularSuperDigito(entrada);
 
-            return superDigito;
-        }
-        static int CalcularSuperDigito(long number)
-        {
-            while (number >= 10)
+            List<List<int>> list = new List<List<int>>();
+
+            while (entrada >= 10)
             {
-                number = SumaDigitos(number);
+
+                List<int> list1 = SumaDigitos(entrada);
+
+                entrada = list1[list1.Count - 1];
+
+                for (int i = list1.Count - 2; i >= 0; i--)
+                {
+                    if (i > 0)
+                        Console.Write(list1[i] + " + ");
+                    else
+                        Console.WriteLine(list1[i] + " = " + entrada);
+                }
+                list.Add(list1);
             }
-            return (int)number;
+            return list;
         }
 
-        static long SumaDigitos(long number)
+        static List<int> SumaDigitos(int number)
         {
-            long suma = 0;
+            List<int> list = new List<int>();
+
+            int suma = 0;
             while (number > 0)
             {
+                list.Add(number % 10);
+
                 suma += number % 10;
                 number /= 10;
             }
-            return suma;
+
+            list.Add(suma);
+
+            return list;
         }
     }
 }
